@@ -213,9 +213,11 @@ def tokenize(texts: Union[str, List[str]], context_length: int = 77, truncate: b
 
     context_length : int
         The context length to use; all CLIP models use 77 as the context length
+        CLIP 使用固定的上下文长度 77，这是基于训练时的设置
 
     truncate: bool
         Whether to truncate the text in case its encoding is longer than the context length
+        截断处理: 当文本过长时，可以选择截断并保留结束标记，或者抛出异常
 
     Returns
     -------
@@ -232,6 +234,12 @@ def tokenize(texts: Union[str, List[str]], context_length: int = 77, truncate: b
         result = torch.zeros(len(all_tokens), context_length, dtype=torch.long)
     else:
         result = torch.zeros(len(all_tokens), context_length, dtype=torch.int)
+
+    print(
+        f"CLIP all_tokens: {all_tokens}\n"
+        f"CLIP all_tokens max length {max(len(t) for t in all_tokens)}\n"
+        f"CLIP tokenize: input texts have been converted to {result.dtype} tensors\n"
+    )
 
     for i, tokens in enumerate(all_tokens):
         if len(tokens) > context_length:
